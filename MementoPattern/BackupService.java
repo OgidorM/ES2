@@ -2,7 +2,6 @@ package com.es2.memento;
 
 import java.util.ArrayList;
 
-define MAX_SNAPSHOTS = 10
 // Caretaker
 
  // 1) Solicitar snapshots ao Originator (backup.takeSnapshot() → server.backup())
@@ -12,7 +11,8 @@ define MAX_SNAPSHOTS = 10
 public class BackupService {
 
     private final Server server;
-
+    private static final int MAX_SNAPSHOTS = 10;
+    
     private final ArrayList<Memento> snapshots;
 
     public BackupService(Server server) {
