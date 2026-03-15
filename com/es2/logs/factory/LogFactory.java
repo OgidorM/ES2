@@ -1,6 +1,5 @@
 package factory;
 
-import config.LogConfig;
 import core.LogRecord;
 
 public abstract class LogFactory {
@@ -8,22 +7,13 @@ public abstract class LogFactory {
     public LogFactory() {
     }
 
-    public static LogRecord makeLogRecord(String type) throws UndefinedLogTypeException, LogSystemInactiveException {
+    public static LogRecord makeLogRecord(String type) throws UndefinedLogTypeException {
         if (type == null) {
             throw new UndefinedLogTypeException("Type cannot be null");
         }
-        LogConfig config = LogConfig.INSTANCE;
         LogRecord record;
         String t = type.trim().toUpperCase();
         Number severity;
-
-        if (!config.isActive()) {
-            throw new LogSystemInactiveException("O sistema de logs não está ativo.");
-        }
-
-        if (!config.getLevels().contains(t)) {
-            throw new UndefinedLogTypeException("O nível " + t + " não está ativo nas configurações.");
-        }
 
         switch (t) {
             case "INFO":
@@ -45,7 +35,6 @@ public abstract class LogFactory {
             default:
                 throw new UndefinedLogTypeException("Undefined log type: " + type);
         }
-
         record.setName(t);
         record.setSeverity(severity);
         return record;

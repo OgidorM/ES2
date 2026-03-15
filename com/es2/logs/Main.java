@@ -1,60 +1,24 @@
 import config.LogConfig;
-import factory.LogFactory;
-import factory.UndefinedLogTypeException;
-import factory.LogSystemInactiveException;
-import core.LogRecord;
+import core.BasicLogger;
+import core.Logger;
+import destination.ConsoleDestination;
+import destination.FileDestination;
 
 public class Main {
     public static void main(String[] args) {
-        
-        LogConfig config = LogConfig.INSTANCE;
-        
-        // Add um tipo novo
-        config.addLevel("ERROR");
-        config.addLevel("WARNING");
-        
-        System.out.println("O sistema de logs está ativo? " + config.isActive());
-        System.out.println("Níveis Ativos: " + config.getLevels());
-        System.out.println("Formato: " + config.getMessageFormat());
-        System.out.println("-------------------------------------------------");
-        
-        //1. Simular a tentativa de logar um ERROR
-        String tipoDesejado1 = "ERROR";
-        String mensagem1 = "Ocorreu um erro crítico no sistema.";
+        try {
+            // 1. Criar a Abstração Refinada
+            Logger logger = new BasicLogger();
 
-        //Verificações
-        if (config.isActive() && config.getLevels().contains(tipoDesejado1.toUpperCase())) {
-            try {
-                LogRecord record = LogFactory.makeLogRecord(tipoDesejado1);
-                
-                String output = config.getMessageFormat()
-                        .replace("%l", record.getName())
-                        .replace("%m", mensagem1)
-                        .replace("%t", java.time.LocalDateTime.now().toString());
-                
-                System.out.println(output);
-            } catch (UndefinedLogTypeException | LogSystemInactiveException e) {
-                System.out.println("Erro: Tipo não está registado na fábrica - " + e.getMessage());
-            }
-        } else {
-            System.out.println("Logs do tipo " + tipoDesejado1 + " não foram processados (desativados ou não incluídos nos levels).");
-        }
+            // 2. Registar os serviços/destinos
+            logger.addDestination(new ConsoleDestination());
+            logger.addDestination(new FileDestination());
 
-        //2. Simular a tentativa de logar um DEBUG (que não está ativado no config)
-        String tipoDesejado2 = "DEBUG";
-        String mensagem2 = "Variável X tem o valor 10.";
+            // 3. Usar o sistema
+            logger.log("INFO", "A aplicação iniciou com múltiplos destinos!");
 
-        //Verificações
-        if (config.isActive() && config.getLevels().contains(tipoDesejado2.toUpperCase())) {
-            try {
-                LogRecord record = LogFactory.makeLogRecord(tipoDesejado2);
-                String output = config.getMessageFormat().replace("%l", record.getName()).replace("%m", mensagem2);
-                System.out.println(output);
-            } catch (UndefinedLogTypeException | LogSystemInactiveException e) {
-                System.out.println("Erro: " + e.getMessage());
-            }
-        } else {
-            System.out.println("Logs do tipo " + tipoDesejado2 + " não foram processados (desativados ou não incluídos nos levels).");
+        } catch (Exception e) {
+            System.err.println("Erro Crítico: " + e.getMessage());
         }
     }
 }
