@@ -1,4 +1,4 @@
-package factory;
+package exceptions;
 
 public class LogSystemInactiveException extends Exception {
 

@@ -6,9 +6,9 @@ import java.util.List;
 
 import config.LogConfig;
 import destination.LogDestination;
+import exceptions.LogSystemInactiveException;
+import exceptions.UndefinedLogTypeException;
 import factory.LogFactory;
-import factory.LogSystemInactiveException;
-import factory.UndefinedLogTypeException;
 
 public abstract class Logger {
     protected List<LogDestination> destinations;

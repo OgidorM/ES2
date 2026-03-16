@@ -1,6 +1,7 @@
 package factory;
 
 import core.LogRecord;
+import exceptions.UndefinedLogTypeException;
 
 public abstract class LogFactory {
 

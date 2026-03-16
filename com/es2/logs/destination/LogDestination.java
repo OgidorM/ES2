@@ -1,6 +1,5 @@
 package destination;
 
-public interface LogDestination  {
-
-    void write(String message);  
+public interface LogDestination {
+    void write(String message);
 }
