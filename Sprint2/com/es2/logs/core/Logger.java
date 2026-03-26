@@ -8,7 +8,7 @@ import config.LogConfig;
 import destination.LogDestination;
 import exceptions.LogSystemInactiveException;
 import exceptions.UndefinedLogTypeException;
-import factory.LogFactory;
+import com.es2.objectpool.ReusablePool;
 
 public abstract class Logger {
     protected List<LogDestination> destinations;
@@ -35,15 +35,17 @@ public abstract class Logger {
         }
 
         try {
-            LogRecord record = LogFactory.makeLogRecord(type);
-            
+            LogRecord record = ReusablePool.getInstance().acquire(type);
+
             String formattedMessage = config.getMessageFormat()
                     .replace("%l", record.getName())
                     .replace("%m", message)
                     .replace("%t", LocalDateTime.now().toString());
 
-            // A bridge faz o trabalho delegando na classe filha (Template Method)
+            // A bridge faz o trabalho delegando na classe filha
             dispatchLog(formattedMessage);
+
+            ReusablePool.getInstance().release(record);
         } catch (Exception e) {
             System.err.println("Erro ao gerar log (" + type + "): " + e.getMessage());
         }
