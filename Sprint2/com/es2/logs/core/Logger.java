@@ -21,6 +21,10 @@ public abstract class Logger {
         this.destinations.add(dest);
     }
 
+    public List<LogDestination> getDestinations() {
+        return destinations;
+    }
+
     public void log(String type, String message) throws LogSystemInactiveException, UndefinedLogTypeException {
         LogConfig config = LogConfig.INSTANCE;
 
@@ -52,4 +56,18 @@ public abstract class Logger {
     }
 
     protected abstract void dispatchLog(String formattedMessage);
+
+    // --- M6: Memento (Originator) ---
+
+    public LogSystemMemento saveState() {
+        LogConfig config = LogConfig.INSTANCE;
+        return new LogSystemMemento(destinations, config.getLevels(), config.getFilters());
+    }
+
+    public void restoreState(LogSystemMemento memento) {
+        this.destinations = memento.getSavedDestinations();
+        LogConfig config = LogConfig.INSTANCE;
+        config.setLevels(memento.getSavedLevels());
+        config.setFilters(memento.getSavedFilters());
+    }
 }
