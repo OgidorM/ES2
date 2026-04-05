@@ -1,8 +1,10 @@
 import config.LogConfig;
 import core.BasicLogger;
-import core.Logger;
 import core.LogCategory; // M4
 import core.LogRecord;   // M4/M2 interface
+import core.Logger;
+import decorator.AlertLoggerDecorator;
+import decorator.AnalyticsLoggerDecorator;
 import destination.ConsoleDestination;
 import destination.FileDestination;
 import factory.LogFactory;       // M2
@@ -25,6 +27,11 @@ public class Main {
             logger.addDestination(new ConsoleDestination());
             logger.addDestination(new FileDestination(config.getDestinationPath()));
 
+            // M7: Aplicar o Decorator Pattern (Extensão Dinâmica)
+            AnalyticsLoggerDecorator analyticsLogger = new AnalyticsLoggerDecorator(logger);
+            Logger loggerDecoratorCompleto = new AlertLoggerDecorator(analyticsLogger);
+
+
             // M2: Criar registos individuais via Factory
             LogRecord log1 = LogFactory.makeLogRecord("INFO");
             LogRecord log2 = LogFactory.makeLogRecord("ERROR");
@@ -34,15 +41,15 @@ public class Main {
             moduloAuth.add(log1);
             moduloAuth.add(log2);
 
-            // 1. Log Simples
-            logger.log("INFO", "Início do processamento.");
-
-            // 2. Log que usa a informação da Categoria (M4)
-            logger.log("WARNING", "Problema no módulo: " + moduloAuth.getName());
-
-            // 3. Demonstrar a severidade calculada do Composite
-            System.out.println("Severidade do módulo Auth: " + moduloAuth.getSeverity());
-
+            System.out.println("\n--- TESTANDO LOGS E O MÓDULO M7 ---");
+            loggerDecoratorCompleto.log("INFO", "Início do processamento da aplicação.");
+            loggerDecoratorCompleto.log("ERROR", "Falha de conexão com a Base de Dados de Autenticação.");
+            loggerDecoratorCompleto.log("WARNING", "O disco C: está quase cheio.");
+            loggerDecoratorCompleto.log("ERROR", "Timeout no módulo de pagamentos.");
+            System.out.println("");
+            System.out.println("Aqui esta o analytics logger: ");
+            analyticsLogger.printStats();
+            System.out.println("_____________________________________________________________________________________________________________________");
             // -------------------------------------------------------------------
             // M6: Memento — guardar e restaurar estado do sistema de logs
             // -------------------------------------------------------------------

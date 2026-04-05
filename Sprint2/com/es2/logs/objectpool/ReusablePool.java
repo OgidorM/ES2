@@ -1,11 +1,8 @@
 package objectpool;
 
-import com.es2.objectpool.ObjectNotFoundException;
-import com.es2.objectpool.PoolExhaustedException;
 import core.LogRecord;
-import factory.LogFactory;
 import exceptions.UndefinedLogTypeException;
-
+import factory.LogFactory;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,14 +1,15 @@
 package core;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 import config.LogConfig;
 import destination.LogDestination;
 import exceptions.LogSystemInactiveException;
 import exceptions.UndefinedLogTypeException;
-import com.es2.objectpool.ReusablePool;
+import objectpool.ReusablePool;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public abstract class Logger {
     protected List<LogDestination> destinations;
